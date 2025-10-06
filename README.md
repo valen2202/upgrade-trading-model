@@ -9,11 +9,11 @@
 
 ## 🧠 1. Introducción
 
-¿Alguna vez te has preguntado cómo convertir datos brutos de trading en una ventaja operativa real?
+**Data Science aplicado al trading: de la intuición a la evidencia.**
 
-Este proyecto nació de esa inquietud: transformar un simple registro histórico de operaciones en una **fuente de información estratégica**.
+En este proyecto diseñé y analicé un modelo de trading desde cero, *tomé un modelo a penas rentable* y a través de la creación y medición de nuevas variables logré capturar patrones que no se veían a simple vista.
 
-El objetivo fue **optimizar los resultados de un modelo de trading**, analizando los datos históricos de *Take Profit* y *Stop Loss* para **aumentar el Win Rate y mejorar la relación riesgo-beneficio**.
+El análisis no solo mejoró la precisión del modelo, sino que llevó su **Profit Factor por encima de 3**, un estándar de excelencia en trading cuantitativo. Este proyecto me hizo entender que los datos lo son todo, en un entorno en donde hay tanta confusión acerca de lo que hay que aplicar o no en el mercado, los datos terminan siendo el compañero más fiel para obtener rentabilidad, y aquí demuestro cómo sacarles porvecho.
 
 ---
 
