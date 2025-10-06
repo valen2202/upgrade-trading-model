@@ -219,6 +219,6 @@ Este proyecto demuestra cómo una estrategia de trading puede **evolucionar de u
 
 **Autor:** Valentín Álvarez Lamas  
 **Email:** [valentinalvarezlamas@gmail.com](mailto:valentinalvarezlamas@gmail.com)  
-**LinkedIn:** [linkedin.com/in/valentinalvarezlamas](https://www.linkedin.com/in/valentinalvarezlamas)
+**LinkedIn:** [[linkedin.com/in/valentinalvarezlamas](https://www.linkedin.com/in/valentinalvarezlamas](https://www.linkedin.com/in/valentin-alvarez-lamas-a67720223/))
 
 ---
