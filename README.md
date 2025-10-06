@@ -1,5 +1,3 @@
-# upgrade-trading-model
-
 # 📈 Modelos de Trading: la búsqueda esquiva de la rentabilidad constante
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
