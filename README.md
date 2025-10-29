@@ -1,221 +1,223 @@
-# 📈 Modelos de Trading: la búsqueda esquiva de la rentabilidad constante
+# Data-Driven Trading: How analysis and machine learning boost consistent returns
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Scikit--Learn-orange)
 ![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
 ---
 
-## 🧠 1. Introducción
+## 1. Introduction
 
-**Data Science aplicado al trading: de la intuición a la evidencia.**
+**Data Science applied to trading: from intuition to evidence.**
 
-En este proyecto diseñé y analicé un modelo de trading desde cero, *tomé un modelo a penas rentable* y a través de la creación y medición de nuevas variables logré capturar patrones que no se veían a simple vista.
+In this project, I designed and analyzed a trading model from scratch. I took a *barely profitable model* and, through the creation and measurement of new variables, managed to capture patterns that were not visible at first glance.
 
-El análisis no solo mejoró la precisión del modelo, sino que llevó su **Profit Factor por encima de 3**, un estándar de excelencia en trading cuantitativo. Este proyecto me hizo entender que los datos lo son todo, en un entorno en donde hay tanta confusión acerca de lo que hay que aplicar o no en el mercado, los datos terminan siendo el compañero más fiel para obtener rentabilidad, y aquí demuestro cómo sacarles porvecho.
+The analysis not only improved the model’s accuracy but also raised its **Profit Factor above 3**, a standard of excellence in quantitative trading.  
+This project helped me understand that data is everything—in an environment full of confusion about what should or shouldn’t be applied to the market, data becomes the most reliable partner for achieving profitability, and here I show how to take advantage of it.
 
 ---
 
-## 🧹 2. Limpieza y preparación de datos
+## 2. Data Cleaning and Preparation
 
-Antes de cualquier optimización, el primer paso fue una **limpieza y preparación exhaustiva** del dataset.
+Before any optimization, the first step was an **exhaustive cleaning and preparation** of the dataset.
 
-### Tareas realizadas:
-- Eliminación de filas con valores faltantes en `ticks_SL` (Stop Loss en ticks), ya que representaban registros incompletos.  
-- Conversión de tipos de datos para garantizar que las columnas numéricas fueran correctamente interpretadas.  
-- Creación de una columna `fecha` (año, mes y día) y uso de esta para completar los valores faltantes de `dia_semana`.  
-- Eliminación de columnas irrelevantes o con exceso de valores nulos (`HIN`, `hora_HIN`).  
+### Tasks performed:
+- Removed rows with missing values in `ticks_SL` (Stop Loss in ticks), since they represented incomplete records.  
+- Converted data types to ensure numeric columns were correctly interpreted.  
+- Created a `fecha` (year, month, day) column and used it to complete missing `dia_semana` values.  
+- Removed irrelevant or highly null columns (`HIN`, `hora_HIN`).  
 
-### Métricas iniciales (dataset sin optimizar):
+### Initial metrics (unoptimized dataset):
 
-| Métrica | Valor |
+| Metric | Value |
 | --- | --- |
-| Win Rate inicial | **31.85%** |
-| Máxima racha de pérdidas | **16** |
-| RR promedio en operaciones ganadoras | **3.50** |
+| Initial Win Rate | **31.85%** |
+| Max losing streak | **16** |
+| Avg RR of winning trades | **3.50** |
 | Profit factor | **1.89** |
 
-> Este punto de partida permitió visualizar el desempeño base del sistema antes de aplicar mejoras.
+> This baseline allowed visualization of the system’s performance before applying improvements.
 
 ---
 
-## 🔍 3. Análisis Exploratorio de Datos (EDA)
+## 3. Exploratory Data Analysis (EDA)
 
-El **EDA (Exploratory Data Analysis)** permitió identificar las variables con mayor impacto en los resultados.
+The **EDA (Exploratory Data Analysis)** helped identify variables with the greatest impact on results.
 
-Se analizaron dos factores principales:
-- `ticks_rango_OTE`: tamaño de la zona de entrada óptima (en ticks).  
-- `antiguedad_de_liquidez`: tiempo transcurrido desde que se formó la liquidez.
+Two main factors were analyzed:
+- `ticks_rango_OTE`: size of the optimal entry zone (in ticks).  
+- `antiguedad_de_liquidez`: time elapsed since liquidity was formed.
 
-### Hallazgos clave:
-- Operaciones con `ticks_rango_OTE` > **55.2** mostraban una **disminución significativa en el Win Rate**.  
-- Operaciones con `antiguedad_de_liquidez` > **300** velas también tenían **menor probabilidad de éxito**.
+### Key findings:
+- Trades with `ticks_rango_OTE` > **55.2** showed a **significant decrease in Win Rate**.  
+- Trades with `antiguedad_de_liquidez` > **300** candles also had a **lower success probability**.
 
-📊 **Conclusión:**  
-Filtrar operaciones con valores superiores a estos umbrales mejora las métricas generales del sistema.
+ **Conclusion:**  
+Filtering trades above these thresholds improves the system’s overall metrics.
 
 ---
 
-## ⚙️ 4. Resultados tras el filtrado
+## 4. Results After Filtering
 
-Después de aplicar los filtros (`ticks_rango_OTE ≤ 55.2` y `antiguedad_de_liquidez ≤ 300`), los resultados mejoraron notablemente:
+After applying the filters (`ticks_rango_OTE ≤ 55.2` and `antiguedad_de_liquidez ≤ 300`), results improved notably:
 
-| Métrica | Antes del filtro | Después del filtro |
+| Metric | Before filter | After filter |
 | --- | --- | --- |
 | Win Rate | 31.85% | **34.88%** |
-| Máx. racha de pérdidas | 16 | **13** |
-| RR promedio (TPs) | 3.50 | **3.55** |
+| Max losing streak | 16 | **13** |
+| Avg RR (TPs) | 3.50 | **3.55** |
 
-> Este filtrado eliminó setups históricamente desfavorables, aumentando la consistencia general del modelo.  
-> Pero esperen, esta optimización recién comienza...
+> This filtering removed historically unfavorable setups, increasing the model’s overall consistency.  
+> But wait, the optimization has just begun...
 
 ---
 
-## 🎯 5. Optimización del Take Profit (TP)
+## 5. Take Profit (TP) Optimization
 
-Se aplicó una estrategia de **optimización dinámica del Take Profit** en función del tamaño de la zona OTE (`ticks_rango_OTE`).
+A **dynamic Take Profit optimization strategy** was applied based on the OTE zone size (`ticks_rango_OTE`).
 
-### Objetivo:
-Maximizar el valor esperado para cada operación:
+### Objective:
+Maximize the expected value for each trade:
 
 \[
-E(R) = R \times P(\text{alcanzar R sin Stop Loss})
+E(R) = R \times P(\text{reaching R without Stop Loss})
 \]
 
-Mediante análisis de percentiles de `RR_potencial` y simulaciones, se estimó un TP óptimo para cada intervalo de OTE.
+Through percentile analysis of `RR_potencial` and simulations, an optimal TP was estimated for each OTE range.
 
-### Resultados:
+### Results:
 
-| Métrica | Valor |
+| Metric | Value |
 | --- | --- |
-| R:R total (datos filtrados originales) | 126.53 |
-| R:R total (con TP optimizado) | **236.57** |
-| Mejora absoluta | **+110.04** |
-| Mejora porcentual | **+86.9%** |
+| Total R:R (original filtered data) | 126.53 |
+| Total R:R (with optimized TP) | **236.57** |
+| Absolute improvement | **+110.04** |
+| Percentage improvement | **+86.9%** |
 
-📈 **Conclusión:**  
-Definir dinámicamente el TP en base a las características del trade casi duplicó la rentabilidad total.
+ **Conclusion:**  
+Defining TP dynamically based on trade characteristics nearly doubled total profitability.
 
 ---
 
-## 🧱 6. Ajuste del Stop Loss (SL)
+## 6. Stop Loss (SL) Adjustment
 
-Se analizó el efecto del **retroceso máximo del precio dentro del OTE** (`profundidad_retroceso_real`).
+The effect of the **maximum price retracement within the OTE** (`profundidad_retroceso_real`) was analyzed.
 
-- Cuando el precio retrocedía **0.9 del rango OTE**, la mayoría de las operaciones terminaban en pérdida.  
-- Se implementó una estrategia ajustada:
-  - Si el retroceso llegaba a 0.9 → se consideraba Stop Loss anticipado (-1R).  
-  - Si la operación alcanzaba TP sin retroceder a 0.9 → se ajustaba su R:R hacia arriba (x1.33).  
+- When price retraced **0.9 of the OTE range**, most trades ended in loss.  
+- An adjusted strategy was implemented:
+  - If retracement reached 0.9 → early Stop Loss triggered (-1R).  
+  - If trade hit TP without retracing to 0.9 → R:R was increased (×1.33).  
 
-### Resultados:
+### Results:
 
-| Métrica | Valor |
+| Metric | Value |
 | --- | --- |
-| R:R total (original filtrado) | 126.53 |
-| R:R total (con SL ajustado a 0.9) | **163.00** |
-| Mejora absoluta | **+36.47** |
-| Mejora porcentual | **+28.82%** |
+| Total R:R (original filtered) | 126.53 |
+| Total R:R (with SL adjusted to 0.9) | **163.00** |
+| Absolute improvement | **+36.47** |
+| Percentage improvement | **+28.82%** |
 
-📉 **Conclusión:**  
-Incorporar un Stop Loss dinámico basado en retroceso aumentó significativamente la eficiencia operativa.
+ **Conclusion:**  
+Incorporating a dynamic Stop Loss based on retracement significantly increased operational efficiency.
 
 ---
 
-## ⚖️ 7. Impacto combinado (TP + SL)
+## 7. Combined Impact (TP + SL)
 
-La combinación de ambas estrategias produjo los mejores resultados globales.
+Combining both strategies produced the best overall results.
 
-| Criterio | Win Rate (%) | Prom. RR (ganadoras) | Profit Factor | Máx. racha pérdidas |
+| Criterion | Win Rate (%) | Avg RR (winners) | Profit Factor | Max losing streak |
 | --- | --- | --- | --- | --- |
-| RR_real (sin cambios) | 34.42 | 3.615 | 1.897 | 13 |
-| RR_real con 0.9 SL | 30.23 | 4.815 | 2.087 | 15 |
-| TP óptimo | 22.53 | 9.209 | 2.678 | 13 |
-| TP óptimo + SL 0.9 | **20.88** | **12.016** | **3.149** | **13** |
+| RR_real (unchanged) | 34.42 | 3.615 | 1.897 | 13 |
+| RR_real with 0.9 SL | 30.23 | 4.815 | 2.087 | 15 |
+| Optimal TP | 22.53 | 9.209 | 2.678 | 13 |
+| Optimal TP + SL 0.9 | **20.88** | **12.016** | **3.149** | **13** |
 
-📊 **Conclusión:**  
-Aunque el Win Rate bajó ligeramente, el **Profit Factor casi se duplicó (de 1.89 a 3.1)** y la rentabilidad acumulada aumentó drásticamente.
+ **Conclusion:**  
+Although the Win Rate slightly decreased, the **Profit Factor nearly doubled (from 1.89 to 3.1)** and total profitability rose dramatically.
 
 ---
 
-## 🤖 8. Predicción con Machine Learning
+## 8. Machine Learning Prediction
 
-Finalmente, se desarrolló un modelo de **clasificación supervisada** para predecir el resultado de una operación (TP o SL).
+Finally, a **supervised classification model** was developed to predict trade outcomes (TP or SL).
 
-### Preparación de datos:
-- Eliminación de variables *spoiler* (como `RR_real`).  
-- Imputación de valores faltantes.  
-- Estandarización (`StandardScaler`) y codificación categórica (`OneHotEncoder`).  
-- División *train/test* y evaluación con `SMOTE` para manejar desbalanceo.
+### Data preparation:
+- Removed *spoiler* variables (like `RR_real`).  
+- Imputed missing values.  
+- Standardized (`StandardScaler`) and applied categorical encoding (`OneHotEncoder`).  
+- Performed train/test split and used `SMOTE` to handle imbalance.
 
-### Modelos entrenados:
-`Logistic Regression · Random Forest · Gradient Boosting · SVM · KNN · Decision Tree · Naive Bayes (ajustado) · MLP Classifier · LightGBM · XGBoost`
+### Models trained:
+`Logistic Regression · Random Forest · Gradient Boosting · SVM · KNN · Decision Tree · Naive Bayes (tuned) · MLP Classifier · LightGBM · XGBoost`
 
-### Métricas del modelo Naive Bayes (mejor resultado):
+### Naive Bayes metrics (best result):
 
-| Métrica | Valor |
+| Metric | Value |
 | --- | --- |
 | AUC | 0.7039 |
-| Precisión (TP) | 0.346 |
+| Precision (TP) | 0.346 |
 | Recall (TP) | **0.947** |
 | F1-Score (TP) | 0.507 |
-| Accuracy global | 0.4068 |
+| Global accuracy | 0.4068 |
 
-📈 **Interpretación:**  
-El modelo tiene un **recall del 95% para identificar trades ganadores**, lo que significa que detecta casi todos los Take Profits reales, aunque con cierta sobrepredicción — justo lo que buscamos: **no dejar pasar operaciones rentables**, incluso a costa de algunos falsos positivos.
+ **Interpretation:**  
+The model achieved a **95% recall in detecting winning trades**, meaning it identified almost all real Take Profits, though with some overprediction—exactly what we aim for: **not missing profitable trades**, even at the cost of some false positives.
 
 ---
 
-## 📊 9. Conclusiones generales
+## 9. General Conclusions
 
-### Principales mejoras obtenidas:
+### Main improvements achieved:
 
-| Aspecto | Antes | Modelo mejorado sin ML |
+| Aspect | Before | Improved model (no ML) |
 | --- | --- | --- |
 | Win Rate | 34% | **20.88%** |
 | Profit Factor | 1.89 | **3.14** |
-| Recall (TP, modelo ML) | — | **0.95** |
+| Recall (TP, ML model) | — | **0.95** |
 
-### Insights clave:
-- El filtrado basado en EDA eliminó contextos poco rentables.  
-- La optimización del TP y el ajuste del SL transformaron la curva de rendimiento.  
-- El Win Rate bajó ligeramente, pero el *profit factor* se disparó, gracias a operaciones con mayores recompensas.  
-- El modelo Naive Bayes demostró un gran potencial como filtro predictivo de operaciones, anticipando setups ganadores en tiempo real.
-
----
-
-## 🔮 10. Próximos pasos
-
-1. **Integrar el clasificador Naive Bayes** al proceso operativo para filtrar setups de alta probabilidad.  
-2. **Refinar el modelo de regresión** para estimar mejor el `RR_potencial`.  
-3. **Agregar nuevas fuentes de datos**, como volatilidad o sentimiento de mercado.  
-4. **Backtesting completo** con las reglas y modelos combinados para validar robustez y estabilidad.
+### Key insights:
+- EDA-based filtering removed unprofitable contexts.  
+- TP optimization and SL adjustment reshaped the performance curve.  
+- Win Rate slightly dropped, but the profit factor skyrocketed due to higher-reward trades.  
+- The Naive Bayes model showed strong potential as a predictive trade filter, identifying profitable setups in real time.
 
 ---
 
-## 🧭 Conclusión final
+## 10. Next Steps
 
-Este proyecto demuestra cómo una estrategia de trading puede **evolucionar de una intuición a un sistema basado en datos**, combinando análisis exploratorio, optimización estadística y modelos predictivos.
-
-**Resultado:**  
-> De un *Profit Factor* de **1.3 a más de 3.0**, con un enfoque replicable, medible y sustentado en evidencia.
+1. **Integrate the Naive Bayes classifier** into the operational process to filter high-probability setups.  
+2. **Refine the regression model** to better estimate `RR_potencial`.  
+3. **Add new data sources**, such as volatility or market sentiment.  
+4. **Perform full backtesting** with combined rules and models to validate robustness and stability.
 
 ---
 
-### 🧰 Stack Tecnológico
+## Final Conclusion
 
-| Área | Herramientas |
-|------|---------------|
-| Lenguaje | Python (3.10+) |
-| Análisis | Pandas, NumPy, Seaborn, Matplotlib |
-| Modelado | Scikit-learn, LightGBM, XGBoost |
-| Optimización | GridSearchCV, Interpolación de percentiles |
+This project demonstrates how a trading strategy can **evolve from intuition to a data-driven system**, combining exploratory analysis, statistical optimization, and predictive modeling.
+
+**Result:**  
+> From a *Profit Factor* of **1.3 to over 3.0**, with a replicable, measurable, and evidence-based approach.
+
+---
+
+### Tech Stack
+
+| Area | Tools |
+|------|-------|
+| Language | Python (3.10+) |
+| Analysis | Pandas, NumPy, Seaborn, Matplotlib |
+| Modeling | Scikit-learn, LightGBM, XGBoost |
+| Optimization | GridSearchCV, Percentile interpolation |
 | ML Pipeline | Imputer + Scaler + OneHotEncoder + Classifier |
-| Entorno | Google Colab / Jupyter Notebook |
+| Environment | Google Colab / Jupyter Notebook |
 
 ---
 
-### 📬 Contacto
+### Contact
+valentinalvarezlamas@gmail.com
+
 
 **Autor:** Valentín Álvarez Lamas  
 **Email:** [valentinalvarezlamas@gmail.com](mailto:valentinalvarezlamas@gmail.com)  
